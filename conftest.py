@@ -5,12 +5,8 @@ from selenium import webdriver
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--url", default="https://demo-opencart.ru"
-    )
-    parser.addoption(
-        "--driver", default="Chrome"
-    )
+    parser.addoption("--url", default="https://demo-opencart.ru")
+    parser.addoption("--driver", default="Chrome")
 
 
 @pytest.fixture
@@ -22,11 +18,17 @@ def base_url(request):
 def driver(request):
     str_driver = request.config.getoption("--driver")
     if str_driver == "Chrome":
-        driver = webdriver.Chrome(executable_path=os.path.expanduser("C:/driver/chromedriver"))
+        driver = webdriver.Chrome(
+            executable_path=os.path.expanduser("C:/driver/chromedriver")
+        )
     elif str_driver == "FireFox":
-        driver = webdriver.Chrome(executable_path=os.path.expanduser("C:/driver/geckodriver"))
+        driver = webdriver.Chrome(
+            executable_path=os.path.expanduser("C:/driver/geckodriver")
+        )
     elif str_driver == "Opera":
-        driver = webdriver.Chrome(executable_path=os.path.expanduser("C:/driver/operadriver"))
+        driver = webdriver.Chrome(
+            executable_path=os.path.expanduser("C:/driver/operadriver")
+        )
     else:
         raise ValueError(f"Incorrect driver {str_driver}")
 
