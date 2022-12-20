@@ -15,18 +15,18 @@ def base_url(request):
 
 
 @pytest.fixture
-def driver(request):
+def browser(request):
     str_driver = request.config.getoption("--driver")
     if str_driver == "Chrome":
         driver = webdriver.Chrome(
             executable_path=os.path.expanduser("C:/driver/chromedriver")
         )
     elif str_driver == "FireFox":
-        driver = webdriver.Chrome(
+        driver = webdriver.FireFox(
             executable_path=os.path.expanduser("C:/driver/geckodriver")
         )
     elif str_driver == "Opera":
-        driver = webdriver.Chrome(
+        driver = webdriver.Opera(
             executable_path=os.path.expanduser("C:/driver/operadriver")
         )
     else:
@@ -35,3 +35,4 @@ def driver(request):
     yield driver
 
     driver.close()
+    
