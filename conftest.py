@@ -16,7 +16,7 @@ def pytest_addoption(parser):
 def base_url(request):
     return request.config.getoption("--url")
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def screenshot_on_failure(request):
     def fin():
         driver = SeleniumWrapper().driver
