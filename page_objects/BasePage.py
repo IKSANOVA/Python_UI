@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 class BasePage:
     def __init__(self, browser):
-        self.browser = browser
+        self.browser = browser        
 
     def _verify_element_presence(self, locator: tuple):
         try:
