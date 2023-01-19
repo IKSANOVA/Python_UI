@@ -15,18 +15,6 @@ def pytest_addoption(parser):
 @pytest.fixture
 def base_url(request):
     return request.config.getoption("--url")
-
-@pytest.fixture(scope="function", autouse=True)
-def screenshot_on_failure(request):
-    def fin():
-        driver = SeleniumWrapper().driver
-        attach = driver.get_screenshot_as_png()
-        if request.node.rep_setup.failed:
-            allure.attach(request.function.__name__, attach, allure.attach_type.PNG)
-        elif request.node.rep_setup.passed:
-            if request.node.rep_call.failed:
-                allure.attach(request.function.__name__, attach, allure.attach_type.PNG)
-    request.addfinalizer(fin)
     
     
 @pytest.fixture
@@ -45,14 +33,14 @@ def browser(request):
         driver = webdriver.Chrome(
             executable_path=os.path.expanduser("C:/driver/chromedriver")
         )
-    # elif str_driver == "FireFox":
-    #     driver = webdriver.Chrome(
-    #         executable_path=os.path.expanduser("C:/driver/geckodriver")
-    #     )
-    # elif str_driver == "Opera":
-    #     driver = webdriver.Chrome(
-    #         executable_path=os.path.expanduser("C:/driver/operadriver")
-    #     )
+    elif str_driver == "FireFox":
+        driver = webdriver.Chrome(
+            executable_path=os.path.expanduser("C:/driver/geckodriver")
+        )
+    elif str_driver == "Opera":
+        driver = webdriver.Chrome(
+            executable_path=os.path.expanduser("C:/driver/operadriver")
+        )
     else:
         raise ValueError(f"Incorrect driver {str_driver}")
     driver.maximize_window()
