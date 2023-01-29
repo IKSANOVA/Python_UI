@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from page_objects.BasePage import BasePage
 from selenium.common.exceptions import NoSuchElementException
+import allure
 
 
 class AdminPage(BasePage):
@@ -26,21 +27,30 @@ class AdminPage(BasePage):
     LAST_DEVICE = (By.CSS_SELECTOR, "tbody>tr:last-child>td:nth-child(3)")
     DELETE_BUTTON = (By.CSS_SELECTOR, "div.pull-right>:nth-child(4)")
 
+    @allure.step("Проверка отображения логотипа")
     def check_logo(self):
         self._element(self.LOGO)
 
+
+    @allure.step("Проверка текста помощи")
     def check_help_text(self):
         self._element(self.HELP_TEXT)
 
+    @allure.step("Проверка ссылки забыл пароль")
     def check_forgot_password(self):
         self._element(self.FORGOT_PASSWORD)
 
+
+    @allure.step("Проверка кнопки Входа")
     def check_login_button(self):
         self._element(self.LOGIN_BUTTON)
 
+
+    @allure.step("Проверка ввода логина-пароля")
     def login(self, username, password):
         self._element(self.INPUT_LOGIN).clear()
         self._element(self.INPUT_LOGIN).send_keys(username)
         self._element(self.INPUT_PASSWORD).clear()
         self._element(self.INPUT_PASSWORD).send_keys(password)
         self._element(self.LOGIN_BUTTON).click()
+        
