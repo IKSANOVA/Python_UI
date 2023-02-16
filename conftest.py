@@ -8,9 +8,16 @@ import allure
 
 
 def pytest_addoption(parser):
-    parser.addoption("--url", default="https://demo-opencart.ru")
-    parser.addoption("--driver", default="pytest")
-    parser.addoption("--log_level", action="store", default="DEBUG")
+    parser.addoption("--api_url", default="https://jsonplaceholder.typicode.com")
+    parser.addoption("--opencart_url", default="https://demo.opencart.com")
+    parser.addoption("--browser", default="chrome")
+    parser.addoption("--browser_version", action="store", default="107.0")
+    parser.addoption("--executor",
+                     # имя контейнера в сети selenoid
+                     default="selenoid",
+                     )
+    parser.addoption("--vnc", action="store_true", default=False)
+    parser.addoption("--video", action="store_true", default=False)
 
 @pytest.fixture
 def base_url(request):
@@ -19,36 +26,24 @@ def base_url(request):
     
 @pytest.fixture
 def browser(request):
-    str_driver = request.config.getoption("--driver")
-    log_level = request.config.getoption("--log_level")
+    browser = request.config.getoption("--browser")
+    browser_version = request.config.getoption("--browser_version")
+    executor = request.config.getoption("--executor")
+    vnc = request.config.getoption("--vnc")
+    video = request.config.getoption("--video")
+    base_url = request.config.getoption("--opencart_url")
 
-    logger = logging.getLogger(request.node.name)
-    file_handler = logging.FileHandler(f"logs/{request.node.name}.log")
-    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-    logger.addHandler(file_handler)
-    logger.setLevel(level=log_level)
-
-    logger.info("Test {} started at {}".format(request.node.name, datetime.datetime.now()))
-    if str_driver == "Chrome":
-        driver = webdriver.Chrome(
-            executable_path=os.path.expanduser("C:/driver/chromedriver")
-        )
-    elif str_driver == "FireFox":
-        driver = webdriver.Chrome(
-            executable_path=os.path.expanduser("C:/driver/geckodriver")
-        )
-    elif str_driver == "Opera":
-        driver = webdriver.Chrome(
-            executable_path=os.path.expanduser("C:/driver/operadriver")
-        )
-    else:
-        raise ValueError(f"Incorrect driver {str_driver}")
-    driver.maximize_window()
-    driver.log_level = log_level
-    driver.logger = logger
-
-    logger.info("Browser:{}".format(browser, driver.desired_capabilities))
-    yield driver
+    driver = webdriver.Remote(
+        command_executor=f"http://{executor}:4444/wd/hub",
+        desired_capabilities={
+            "browserName": browser,
+            "browserVersion": browser_version,
+            "selenoid:options": {
+                "enableVNC": vnc,
+                "enableVideo": video
+            }
+        }
+    )
 
     driver.close()
     logger.info("Test {} finished at {}".format(request.node.name, datetime.datetime.now()))
